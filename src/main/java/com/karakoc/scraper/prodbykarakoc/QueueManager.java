@@ -113,7 +113,12 @@ public class QueueManager implements QueueService {
         System.out.println("chatgptden response geldi.");
 
         System.out.println("mailler yollaniliyor.");
-        mailService.sendMultipartfileMailToCompanyMails(order, websiteScrapeResult.getFoundEmails().stream().toList(), chatGptResponse.getBody(), chatGptResponse.getSubject());
+        Map<String, Object> sendResults = mailService.sendMultipartfileMailToCompanyMails(order, websiteScrapeResult.getFoundEmails().stream().toList(), chatGptResponse.getBody(), chatGptResponse.getSubject());
+        boolean sentToCompany = websiteScrapeResult.getFoundEmails().stream()
+                .anyMatch(email -> "Sent successfully.".equals(sendResults.get(email)));
+        if (!sentToCompany) {
+            throw new BadRequestException("No company email was sent.");
+        }
 
 
         SentMail sentMail = new SentMail();
