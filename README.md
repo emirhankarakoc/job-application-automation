@@ -31,4 +31,3 @@ You need Java 17, Maven, MySQL, a browser for Selenium, and your own AI and SMTP
 mvn spring-boot:run
 ```
 
-Account API tests are in `src/test`. The scraper reads live websites, so its page selectors may need updates when those sites change.
