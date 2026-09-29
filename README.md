@@ -10,11 +10,11 @@ This Java app helps with the repeated work in job applications. It takes a Linke
 - The app creates an email subject and body, sends the message, and stores the job, company, draft, and sent-mail records.
 - The request becomes `DONE` or `FAILED`.
 
-This is a queue in the database and one Spring Boot process. It does not use Kafka or a separate worker service.
+The queue is stored in MySQL. A scheduled task in the same Spring Boot app reads it.
 
 ## Tech and code
 
-Java 17, Spring Boot, MySQL, JPA, Spring Security/JWT, Selenium, an AI API, and SMTP. The AWS S3 SDK is used with Cloudflare R2 where storage is configured. That is not an AWS deployment.
+Java 17, Spring Boot, MySQL, JPA, Spring Security/JWT, Selenium, an AI API, and SMTP. The AWS S3 SDK is used with Cloudflare R2 where storage is configured. 
 
 - Queue and status: `src/main/java/com/karakoc/scraper/prodbykarakoc/`
 - Job and company readers: `linkedinjobpostingscraper/` and `linkedincompanyscraper/`
