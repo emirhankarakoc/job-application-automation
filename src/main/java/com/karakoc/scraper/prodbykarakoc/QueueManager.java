@@ -72,10 +72,10 @@ public class QueueManager implements QueueService {
     @Override
     public QueueController.SentMailResponse seeSentMailByOrderId(String id) {
       SentMail sentMail = sentMailRepository.findSentMailByOrderId(id).orElseThrow(() -> new NotfoundException("sent mail not found."));
-      LinkedInJobPostingResult linkedInJobPostingResult = linkedinJobPostingRepository.findById(sentMail.getJobPostingScraperResultId()).orElseThrow(()->new NotfoundException("QueueManagerda sictim. is ilaninin datalarini cekerken"));
-      LinkedInCompanyProfileResult linkedInCompanyProfileResult = linkedInCompanyProfileResultRepository.findById(sentMail.getCompanyScraperResultId()).orElseThrow(()->new NotfoundException("queuemanagerde sictim, sirketin linkedin profilinin scrape sonuclarini getirirken"));
-      WebsiteScrapeResult websiteScrapeResult = websiteScrapeResultRepository.findById(sentMail.getWebsiteScraperResultId()).orElseThrow(()->new NotfoundException("queuemanagerde sictim,websitenin scrape sonuclarini getirirken"));
-      ChatGptResponse chatGptResponse = chatGptResponseRepository.findById(sentMail.getChatGptResponseId()).orElseThrow(()->new NotfoundException("queuemanagerde sictim, chatgptresponseyi getirirken."));
+      LinkedInJobPostingResult linkedInJobPostingResult = linkedinJobPostingRepository.findById(sentMail.getJobPostingScraperResultId()).orElseThrow(()->new NotfoundException("Job posting result not found for sent mail."));
+      LinkedInCompanyProfileResult linkedInCompanyProfileResult = linkedInCompanyProfileResultRepository.findById(sentMail.getCompanyScraperResultId()).orElseThrow(()->new NotfoundException("Company profile result not found for sent mail."));
+      WebsiteScrapeResult websiteScrapeResult = websiteScrapeResultRepository.findById(sentMail.getWebsiteScraperResultId()).orElseThrow(()->new NotfoundException("Website scrape result not found for sent mail."));
+      ChatGptResponse chatGptResponse = chatGptResponseRepository.findById(sentMail.getChatGptResponseId()).orElseThrow(()->new NotfoundException("Generated email result not found for sent mail."));
       return new QueueController.SentMailResponse(
               sentMail.getId(),
               sentMail.getSubject(),
