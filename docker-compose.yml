@@ -1,0 +1,10 @@
+#version: "3.8"
+#
+#services:
+#  spring-app:
+#    build: .
+#    container_name: spring-selenium
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - JAVA_OPTS=-Xms256m -Xmx512m

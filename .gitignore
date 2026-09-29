@@ -1,4 +1,6 @@
+
+/.idea
+
+
+# Maven build output
 target/
-.env
-*.jar
-.DS_Store
