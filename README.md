@@ -14,7 +14,7 @@ This Java app takes a LinkedIn job post URL and helps send a job application by 
 
 ## Tech
 
-Java 17, Spring Boot, MySQL, JPA, Spring Security with JWT, Selenium, an AI API, and SMTP. The user's CV file is stored in Cloudflare R2 using the AWS S3 SDK. Email is sent with Spring's `JavaMailSender` and configured SMTP credentials. Google OAuth is used in the separate [Newsletter Platform](https://github.com/emirhankarakoc/newsletter-platform), not in this app.
+Java 17, Spring Boot, MySQL, JPA, Spring Security with JWT, Selenium, an AI API, and SMTP. The user's CV file is stored in Cloudflare R2 using the AWS S3 SDK. Email is sent with Spring's `JavaMailSender` and configured SMTP credentials.
 
 ## Code
 
