@@ -9,6 +9,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -27,6 +28,9 @@ import java.util.Map;
 public class MailManager implements MailService {
     @Autowired
     private JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String senderAddress;
 
     private final UserRepository userRepository;
     private final R2Service r2Service;
@@ -89,7 +93,7 @@ public class MailManager implements MailService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
 
-        helper.setFrom("shopifyemirhan6@gmail.com");
+        helper.setFrom(senderAddress);
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(body);
@@ -119,7 +123,7 @@ public class MailManager implements MailService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 
-        helper.setFrom("shopifyemirhan6@gmail.com");
+        helper.setFrom(senderAddress);
         helper.setTo(to);
         helper.setSubject("New Mail From App!");
         helper.setText(body);
