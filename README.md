@@ -31,4 +31,4 @@ You need Java 17, Maven, MySQL, a browser for Selenium, and your own AI and SMTP
 mvn spring-boot:run
 ```
 
-The Docker Compose file is an old draft and does not start the app. Account API tests are in `src/test`; the full browser-to-email flow does not have an automated end-to-end test. Website changes can also break the scraper.
+Account API tests are in `src/test`. The scraper reads live websites, so its page selectors may need updates when those sites change.
