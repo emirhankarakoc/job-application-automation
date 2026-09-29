@@ -1,39 +1,34 @@
 # Job Application Automation
 
-A Java backend experiment that takes a LinkedIn job-posting URL and prepares tailored email outreach. It connects several steps that would otherwise be manual: extracting the posting, finding the employer's website and contact addresses, drafting an email, sending it, and recording the outcome.
+This Java app helps with the repeated work in job applications. It takes a LinkedIn job-post URL, reads the job and company pages, looks for a contact email on the company's website, writes a draft with an AI API, sends the email through SMTP, and saves what it sent.
 
-## Processing flow
+## How it works
 
-```text
-POST /queue -> MySQL pending order -> scheduled worker
-    -> Selenium job/company extraction -> employer-site crawl (up to 20 pages)
-    -> AI-generated subject/body -> SMTP send -> sent-mail record
-```
+- `POST /queue` saves a pending request in MySQL. The same URL cannot be added twice.
+- A scheduled worker takes one pending request at a time.
+- Selenium reads the job and company pages. The website crawler checks up to 20 pages for email addresses.
+- The app creates an email subject and body, sends the message, and stores the job, company, draft, and sent-mail records.
+- The request becomes `DONE` or `FAILED`.
 
-`QueueManager` owns the workflow. It rejects duplicate posting URLs, records the order, and links the job, company, website, generated draft, and sent-mail records. `ScheduledService` polls pending orders in one application process and marks completed or failed work. The queue is database-backed; it is **not** Kafka or a separate message broker.
+This is a queue in the database and one Spring Boot process. It does not use Kafka or a separate worker service.
 
-## Stack and code map
+## Tech and code
 
-- Java 17, Spring Boot 3.3, Spring Security/JWT, JPA, MySQL
-- Selenium for page extraction; a bounded crawl for employer contact addresses
-- External AI API for the tailored draft; Spring Mail/SMTP for delivery
-- AWS SDK for Cloudflare R2-compatible storage where configured (not an AWS deployment)
+Java 17, Spring Boot, MySQL, JPA, Spring Security/JWT, Selenium, an AI API, and SMTP. The AWS S3 SDK is used with Cloudflare R2 where storage is configured. That is not an AWS deployment.
 
-| Component | Path |
-| --- | --- |
-| Order API and status | `src/main/java/com/karakoc/scraper/prodbykarakoc/` |
-| Job and company extraction | `src/main/java/com/karakoc/scraper/linkedinjobpostingscraper/`, `linkedincompanyscraper/` |
-| Website crawl and email draft | `src/main/java/com/karakoc/scraper/websitescraper/`, `chatgptapi/` |
-| Delivery and sent records | `src/main/java/com/karakoc/scraper/mailservice/`, `sentmails/` |
+- Queue and status: `src/main/java/com/karakoc/scraper/prodbykarakoc/`
+- Job and company readers: `linkedinjobpostingscraper/` and `linkedincompanyscraper/`
+- Website search and email draft: `websitescraper/` and `chatgptapi/`
+- Email records: `mailservice/` and `sentmails/`
 
-## Local setup
+All paths above are under `src/main/java/com/karakoc/scraper/`.
 
-Requires Java 17, Maven, MySQL, a browser compatible with the Selenium setup, and credentials for the external services used in a full run.
+## Run locally
 
-Set `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `MAIL_USERNAME`, `MAIL_PASSWORD`, and `OPENAI_API_KEY` as appropriate. `src/main/resources/application.properties` lists the full configuration, including optional R2 values. Then:
+You need Java 17, Maven, MySQL, a browser for Selenium, and your own AI and SMTP accounts. Set `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `OPENAI_API_KEY`, `MAIL_USERNAME`, and `MAIL_PASSWORD`. See `src/main/resources/application.properties` for all settings.
 
 ```bash
 mvn spring-boot:run
 ```
 
-The `docker-compose.yml` in this snapshot is only a commented draft; it does not start the stack. The repository has account API tests under `src/test`, but the complete scraping-to-delivery workflow has not been verified by an automated integration test in this public snapshot. External site markup and email delivery configuration affect a full run.
+The Docker Compose file is an old draft and does not start the app. Account API tests are in `src/test`; the full browser-to-email flow does not have an automated end-to-end test. Website changes can also break the scraper.
